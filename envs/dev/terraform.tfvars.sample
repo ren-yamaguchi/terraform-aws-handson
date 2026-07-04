@@ -4,6 +4,11 @@ environment     = "dev"
 key_pair_name   = "your-key-name"      # Replace with your key pair name
 common_ssh_cidr = "x.x.x.x/32"         # Replace with your global IP/32 (check via: curl https://checkip.amazonaws.com)
 
+# ===== VPC =====
+# Uncomment and change if you want to override the default VPC CIDR (10.0.0.0/16).
+# Remember to also update subnets[].cidr so they fit within the new VPC range.
+# vpc_cidr = "172.31.0.0/16"
+
 # ===== Subnets =====
 # Each subnet is defined as subnet_name => { cidr, az, type }.
 # type must be "public" or "private".
