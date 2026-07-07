@@ -1,18 +1,18 @@
 project_name    = "handson"
 environment     = "dev"
 
-key_pair_name   = "your-key-name"      # Replace with your key pair name
-common_ssh_cidr = "x.x.x.x/32"         # Replace with your global IP/32 (check via: curl https://checkip.amazonaws.com)
+key_pair_name   = "your-key-name"      # 自分のキーペア名に置き換えてください
+common_ssh_cidr = "x.x.x.x/32"         # 自分のグローバルIP/32に置き換えてください(確認方法: curl https://checkip.amazonaws.com)
 
 # ===== VPC =====
-# Uncomment and change if you want to override the default VPC CIDR (10.0.0.0/16).
-# Remember to also update subnets[].cidr so they fit within the new VPC range.
+# デフォルトのVPC CIDR(10.0.0.0/16)を変更したい場合はコメントを外して変更してください。
+# その際、subnets[].cidr も新しいVPCの範囲に収まるように併せて更新してください。
 # vpc_cidr = "172.31.0.0/16"
 
-# ===== Subnets =====
-# Each subnet is defined as subnet_name => { cidr, az, type }.
-# type must be "public" or "private".
-# Multiple subnets in the same AZ are allowed.
+# ===== サブネット =====
+# 各サブネットは subnet_name => { cidr, az, type } の形式で定義します。
+# type は "public" または "private" を指定してください。
+# 同一AZ内に複数のサブネットを定義することも可能です。
 subnets = {
   "public-a"  = { cidr = "10.0.1.0/24",  az = "ap-northeast-1a", type = "public" }
 #  "public-c"  = { cidr = "10.0.2.0/24",  az = "ap-northeast-1c", type = "public" }
@@ -20,15 +20,15 @@ subnets = {
 #  "private-c" = { cidr = "10.0.12.0/24", az = "ap-northeast-1c", type = "private" }
 }
 
-# ===== Additional Security Groups (optional) =====
-# The "common" SG (SSH only) is created automatically; define additional SGs here.
-# Each EC2 references SGs by name in security_group_ids inside instances.
+# ===== 追加のセキュリティグループ(任意) =====
+# "common" SG(SSHのみ)は自動的に作成されます。追加のSGはここで定義してください。
+# 各EC2は instances 内の security_group_ids でSG名を参照します。
 #
-# Each ingress rule can specify either cidr_blocks (IP-based) or
-# source_security_groups (SG-based), or both. SG names defined in this block
-# can be referenced, including "common" and self-reference.
+# 各ingressルールには cidr_blocks(IPベース)または
+# source_security_groups(SGベース)のいずれか、または両方を指定できます。
+# このブロック内で定義したSG名を参照可能で、"common" や自己参照も可能です。
 security_groups = {
-  # Example: Web tier (HTTP / HTTPS from my IP)
+  # 例: Web層(自分のIPからのHTTP / HTTPS)
   # "web" = {
   #   description = "Web tier"
   #   ingress_rules = [
@@ -37,7 +37,7 @@ security_groups = {
   #   ]
   # }
 
-  # Example: AP tier (Tomcat from web SG only)
+  # 例: AP層(web SGからのTomcatのみ)
   # "ap" = {
   #   description = "AP tier"
   #   ingress_rules = [
@@ -45,7 +45,7 @@ security_groups = {
   #   ]
   # }
 
-  # Example: DB tier (PostgreSQL from ap SG only)
+  # 例: DB層(ap SGからのPostgreSQLのみ)
   # "db" = {
   #   description = "DB tier"
   #   ingress_rules = [
@@ -53,7 +53,7 @@ security_groups = {
   #   ]
   # }
 
-  # Example: Cluster (self-reference for inter-node communication)
+  # 例: クラスタ(ノード間通信のための自己参照)
   # "cluster" = {
   #   description = "Cluster node sync"
   #   ingress_rules = [
@@ -62,11 +62,11 @@ security_groups = {
   # }
 }
 
-# ===== EC2 instances =====
+# ===== EC2インスタンス =====
 # server_name => { instance_type, subnet_name, security_group_ids, associate_public_ip }
-# subnet_name must match a key defined in subnets above.
-# security_group_ids: list of SG names. "common" is always available.
-# Empty {} means no EC2 is created (useful for pre-provisioning VPC + SG only).
+# subnet_name は上記 subnets で定義したキーと一致させる必要があります。
+# security_group_ids: SG名のリスト。"common" は常に利用可能です。
+# {} を空にするとEC2は作成されません(VPC + SGのみを先行構築したい場合に便利です)。
 instances = {
   "server-01" = {
     instance_type       = "t3.micro"
@@ -76,8 +76,8 @@ instances = {
   }
 }
 
-# ===== Feature toggles =====
+# ===== 機能フラグ =====
 enable_nat = false
 enable_alb = false
 
-# alb_target_instances = ["server-01"]    # Required when enable_alb = true
+# alb_target_instances = ["server-01"]    # enable_alb = true の場合は必須
